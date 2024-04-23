@@ -61,4 +61,33 @@ This Terraform configuration will set up the following:
 - **AWS CodeBuild**: A service that compiles source code, runs tests, and produces software packages that are ready to deploy.
 - **CodeCommit Repository**: A source control service to host your private git repositories.
 
-Ensure to replace placeholders and add detailed instructions as required for specific configurations and secrets management. 
+## List of resources created
+
+| Module                                         | Resource Type                                    | Resource Name                           |
+|------------------------------------------------|--------------------------------------------------|-----------------------------------------|
+| module.cloud9_ide                              | aws_cloud9_environment_ec2                       | cloud9_env                              |
+| module.cloud9_ide                              | aws_iam_policy                                   | codecommit_access                       |
+| module.cloud9_ide                              | aws_iam_role                                     | cloud9_role                             |
+| module.cloud9_ide                              | aws_iam_role_policy_attachment                   | codecommit_policy_attach                |
+| module.codebuild_terraform                     | aws_codebuild_project                            | terraform_codebuild_project             |
+| module.codecommit_infrastructure_source_repo   | aws_codecommit_approval_rule_template            | source_repository_approval              |
+| module.codecommit_infrastructure_source_repo   | aws_codecommit_approval_rule_template_association| source_repository_approval_association  |
+| module.codecommit_infrastructure_source_repo   | aws_codecommit_repository                        | source_repository                       |
+| module.codepipeline_iam_role                   | aws_iam_policy                                   | codepipeline_policy                     |
+| module.codepipeline_iam_role                   | aws_iam_role                                     | codepipeline_role                       |
+| module.codepipeline_iam_role                   | aws_iam_role_policy_attachment                   | codepipeline_role_attach                |
+| module.codepipeline_kms                        | aws_kms_key                                      | encryption_key                          |
+| module.codepipeline_terraform                  | aws_codepipeline                                 | terraform_pipeline                      |
+| module.s3_artifacts_bucket                     | aws_s3_bucket                                    | codepipeline_bucket                     |
+| module.s3_artifacts_bucket                     | aws_s3_bucket                                    | replication_bucket                      |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_logging                            | codepipeline_bucket_logging             |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_logging                            | replication_bucket_logging              |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_policy                             | bucket_policy_codepipeline_bucket       |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_policy                             | bucket_policy_replication_bucket        |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_public_access_block                | codepipeline_bucket_access              |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_public_access_block                | replication_bucket_access               |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_replication_configuration          | replication_config                      |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_server_side_encryption_configuration | codepipeline_bucket_encryption        |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_server_side_encryption_configuration | replication_bucket_encryption         |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_versioning                         | codepipeline_bucket_versioning          |
+| module.s3_artifacts_bucket                     | aws_s3_bucket_versioning                         | replication_bucket_versioning           |
