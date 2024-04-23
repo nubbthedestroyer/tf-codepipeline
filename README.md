@@ -1,0 +1,64 @@
+# Terraform CI/CD Workspace
+
+This Terraform workspace configures an AWS-based CI/CD environment using Cloud9, CodePipeline, CodeBuild, and additional resources. It sets up CodeCommit as the version control service to manage and automatically trigger builds from changes in the repository.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed and configured:
+
+- **Terraform**: Version 0.12.x or later. Download from [Terraform.io](https://www.terraform.io/downloads.html).
+- **AWS CLI**: Configured with administrative access to your AWS account. See [AWS CLI Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
+
+## Quick Start
+
+Follow these steps to set up your CI/CD environment:
+
+1. **If you have not already created an S3 bucket and DynamoDB table for this environment, you can use the tf code in the `bootstrap` folder to do this.  TF state created by this action is meant to be commited to a version of this repository in your environment for later reference or management.  
+
+    Modify the variables at `bootstrap/terraform.tfvars` to meet the needs of the given account you are bootstrapping.  You can then run a tf apply:
+    ```
+    cd bootstrap
+    vi terraform.tfvars
+    terraform init && terraform apply
+    cd ..
+    ```
+    After running apply, one of the outputs is a backend block that can be used in the pipeline terraform.  The output should look like this:
+
+    ```hcl
+    backend "s3" {
+        bucket         = "dtns-devtest-tf-state-us-east-1"
+        key            = "state/tf-pipeline/terraform.tfstate"
+        dynamodb_table = "tf-state-dtnsdevtest-us-east-1"
+        region         = "us-east-1"
+        encrypt        = "true"
+    }
+    ```
+    That snippet would go inside your `terraform {}` stanza at `main.tf` and then the state for this codepipeline would be stored and tracked in that bucket.
+
+2. **Update the `terraform.tfvars` file** located in the repo root directory with your environment specifics:
+    ```
+    nano terraform.tfvars
+    ```
+
+3. **Initialize Terraform** to download the necessary plugins and prepare your workspace, then run a plan:
+    ```
+    terraform init && terraform plan
+    ```
+
+4. **Apply the Terraform configuration** to create the resources:
+    ```
+    terraform apply
+    ```
+
+5. **Upload the `repo-template` content** to your newly created CodeCommit repository, which will kick off the CI/CD pipeline.  There will be a Cloud9 IDE created as part of this Terraform module that you can use to do this.  The IDE's owner will be set as  
+
+## What This Does
+
+This Terraform configuration will set up the following:
+
+- **AWS Cloud9 Environment**: An IDE for writing, running, and debugging your code.
+- **AWS CodePipeline**: A continuous integration and continuous delivery service for fast and reliable application and infrastructure updates.
+- **AWS CodeBuild**: A service that compiles source code, runs tests, and produces software packages that are ready to deploy.
+- **CodeCommit Repository**: A source control service to host your private git repositories.
+
+Ensure to replace placeholders and add detailed instructions as required for specific configurations and secrets management. 
